@@ -8,13 +8,14 @@ class EvaluateRequest(BaseModel):
 
 
 class EvaluateResponse(BaseModel):
-    content_percentage: int | None = Field(
+    content_percentage: int | None
+    score: int | None = Field(
         None,
         ge=0,
-        le=100,
-        description="Content score as percentage (0–100)"
+        le=4,
+        description="PTE content score (0–4)"
     )
     relevance_level: Literal["off-topic", "generic", "partial", "strong"]
     covered_ideas: list[str]
     missing_ideas: list[str]
-    feedback: str = Field(..., max_length=100)
+    feedback: str
