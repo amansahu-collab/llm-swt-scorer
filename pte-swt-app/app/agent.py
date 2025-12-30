@@ -1,13 +1,13 @@
 # app/agent.py
 
 import json
-from groq import Groq
+import os
 from typing import Dict, Any
+
+from groq import Groq
 
 from app.prompt import SYSTEM_PROMPT, build_user_prompt
 from app.config import REQUEST_TIMEOUT
-
-import os
 
 
 class SWTAgent:
@@ -32,6 +32,18 @@ class SWTAgent:
         Evaluate passage + summary and return STRICT JSON output
         """
 
+        word_count = len(summary.split())
+
+        # ---- HARD RULE: TOO SHORT ----
+        if word_count < 14:
+            return {
+                "content_percentage": 0,
+                "relevance_level": "off-topic",
+                "covered_ideas": [],
+                "missing_ideas": ["main idea", "purpose or outcome"],
+                "feedback": "Too short to show understanding. Use 14+ words.",
+            }
+
         user_prompt = build_user_prompt(passage, summary)
 
         try:
@@ -51,9 +63,9 @@ class SWTAgent:
             # ---- STRICT JSON PARSING ----
             parsed = json.loads(raw_output)
 
-            # ---- BASIC SAFETY CHECK ----
+            # ---- REQUIRED KEYS CHECK ----
             required_keys = {
-                "content_score",
+                "content_percentage",
                 "relevance_level",
                 "covered_ideas",
                 "missing_ideas",
@@ -63,22 +75,37 @@ class SWTAgent:
             if not required_keys.issubset(parsed.keys()):
                 raise ValueError("Missing required keys in LLM output")
 
+            # ---- TYPE & RANGE SAFETY ----
+            if not isinstance(parsed["content_percentage"], int):
+                raise ValueError("content_percentage must be int")
+
+            if not (0 <= parsed["content_percentage"] <= 100):
+                raise ValueError("content_percentage out of range")
+
+            if parsed["relevance_level"] not in {
+                "off-topic",
+                "generic",
+                "partial",
+                "strong",
+            }:
+                raise ValueError("Invalid relevance_level")
+
             return parsed
 
         except json.JSONDecodeError:
             return {
-                "content_score": None,
-                "relevance_level": "error",
+                "content_percentage": None,
+                "relevance_level": "off-topic",
                 "covered_ideas": [],
                 "missing_ideas": [],
-                "feedback": "Model returned invalid JSON. Try again.",
+                "feedback": "Invalid model output. Please retry.",
             }
 
-        except Exception as e:
+        except Exception:
             return {
-                "content_score": None,
-                "relevance_level": "error",
+                "content_percentage": None,
+                "relevance_level": "off-topic",
                 "covered_ideas": [],
                 "missing_ideas": [],
-                "feedback": f"Evaluation failed: {str(e)}",
+                "feedback": "Evaluation failed. Please retry.",
             }

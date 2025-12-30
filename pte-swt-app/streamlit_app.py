@@ -53,18 +53,24 @@ if st.button("Evaluate"):
         # -----------------------------
         # OUTPUT
         # -----------------------------
-        if result["content_score"] is None:
+        if result["content_percentage"] is None:
             st.error(result["feedback"])
         else:
             st.subheader("Result")
-            st.metric("Content Score", result["content_score"], help="Scored strictly on key idea coverage, not relevance alone")
+
+            st.metric(
+                "Content Score (%)",
+                f'{result["content_percentage"]}%',
+                help="Scored strictly on key idea coverage, not grammar or fluency",
+            )
 
             st.write("**Relevance Level:**", result["relevance_level"])
             st.write("**Covered Ideas:**", ", ".join(result["covered_ideas"]) or "—")
             st.write("**Missing Ideas:**", ", ".join(result["missing_ideas"]) or "—")
 
             st.info(result["feedback"])
-            if result["content_score"] <= 1:
-                st.warning("Tip: Mention the main purpose or outcome of the passage, not just a generic topic.")
 
-# -----------------------------
+            if result["content_percentage"] < 40:
+                st.warning(
+                    "Tip: Clearly state the main idea and outcome, not just the topic."
+                )
