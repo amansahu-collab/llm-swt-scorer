@@ -1,6 +1,12 @@
+<<<<<<< HEAD
 from app.agent import SWTAgent
 from app.utils import input_hash, normalize_text
 from app.config import (
+=======
+from agent import SWTAgent
+from utils import input_hash, normalize_text
+from config import (
+>>>>>>> fee07bf (added project files)
     APP_TITLE,
     PASSAGE_LABEL,
     SUMMARY_LABEL,
@@ -53,6 +59,7 @@ if st.button("Evaluate"):
         # -----------------------------
         # OUTPUT
         # -----------------------------
+<<<<<<< HEAD
         if result.get("score") is None:
             st.error(result["feedback"])
         else:
@@ -67,14 +74,28 @@ if st.button("Evaluate"):
 
             # ---- OPTIONAL DEBUG INFO (can remove later) ----
             st.caption(f'Raw content match: {result["content_percentage"]}%')
+=======
+        if result["content_score"] is None:
+            st.error(result["feedback"])
+        else:
+            st.subheader("Result")
+            st.metric("Content Score", result["content_score"], help="Scored strictly on key idea coverage, not relevance alone")
+>>>>>>> fee07bf (added project files)
 
             st.write("**Relevance Level:**", result["relevance_level"])
             st.write("**Covered Ideas:**", ", ".join(result["covered_ideas"]) or "—")
             st.write("**Missing Ideas:**", ", ".join(result["missing_ideas"]) or "—")
 
             st.info(result["feedback"])
+<<<<<<< HEAD
 
             if result["score"] <= 1:
                 st.warning(
                     "Tip: Clearly state the main idea and outcome, not just the topic."
                 )
+=======
+            if result["content_score"] <= 1:
+                st.warning("Tip: Mention the main purpose or outcome of the passage, not just a generic topic.")
+
+# -----------------------------
+>>>>>>> fee07bf (added project files)

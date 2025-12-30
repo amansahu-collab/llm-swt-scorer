@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 from pydantic import BaseModel, Field
 from typing import Literal
 
@@ -16,6 +17,19 @@ class EvaluateResponse(BaseModel):
         description="PTE content score (0–4)"
     )
     relevance_level: Literal["off-topic", "generic", "partial", "strong"]
+=======
+from pydantic import BaseModel
+
+
+class EvaluateRequest(BaseModel):
+    passage: str
+    summary: str
+
+
+class EvaluateResponse(BaseModel):
+    content_score: int | None
+    relevance_level: str
+>>>>>>> fee07bf (added project files)
     covered_ideas: list[str]
     missing_ideas: list[str]
     feedback: str
