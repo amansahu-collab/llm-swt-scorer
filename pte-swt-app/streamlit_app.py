@@ -53,16 +53,20 @@ if st.button("Evaluate"):
         # -----------------------------
         # OUTPUT
         # -----------------------------
-        if result["content_percentage"] is None:
+        if result.get("score") is None:
             st.error(result["feedback"])
         else:
             st.subheader("Result")
 
+            # ---- MAIN SCORE (PTE STYLE) ----
             st.metric(
-                "Content Score (%)",
-                f'{result["content_percentage"]}%',
-                help="Scored strictly on key idea coverage, not grammar or fluency",
+                "Content Score (0–4)",
+                result["score"],
+                help="Derived from content match percentage (PTE-style scoring)",
             )
+
+            # ---- OPTIONAL DEBUG INFO (can remove later) ----
+            st.caption(f'Raw content match: {result["content_percentage"]}%')
 
             st.write("**Relevance Level:**", result["relevance_level"])
             st.write("**Covered Ideas:**", ", ".join(result["covered_ideas"]) or "—")
@@ -70,7 +74,7 @@ if st.button("Evaluate"):
 
             st.info(result["feedback"])
 
-            if result["content_percentage"] < 40:
+            if result["score"] <= 1:
                 st.warning(
                     "Tip: Clearly state the main idea and outcome, not just the topic."
                 )
