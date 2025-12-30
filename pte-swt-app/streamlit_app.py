@@ -1,6 +1,6 @@
-from agent import SWTAgent
-from utils import input_hash, normalize_text
-from config import (
+from app.agent import SWTAgent
+from app.utils import input_hash, normalize_text
+from app.config import (
     APP_TITLE,
     PASSAGE_LABEL,
     SUMMARY_LABEL,
