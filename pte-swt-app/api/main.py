@@ -11,9 +11,17 @@ app = FastAPI(
 
 agent = SWTAgent()
 
+@app.get("/ping")
+def ping():
+    return {"status": "ok"}
 
 @app.post("/evaluate", response_model=EvaluateResponse)
 def evaluate_swt(payload: EvaluateRequest):
     passage = normalize_text(payload.passage)
     summary = normalize_text(payload.summary)
     return agent.evaluate(passage, summary)
+
+# ✅ SageMaker-required alias
+@app.post("/invocations")
+def invocations(payload: EvaluateRequest):
+    return evaluate_swt(payload)

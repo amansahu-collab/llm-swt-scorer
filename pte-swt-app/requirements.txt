@@ -1,6 +1,17 @@
-streamlit==1.32.2
-python-dotenv==1.0.1
-groq==0.9.0
-httpx==0.24.1
+# Core API
 fastapi==0.110.0
 uvicorn==0.29.0
+
+# vLLM + OpenAI-compatible server
+vllm
+openai
+
+# REQUIRED by vLLM server at import time
+uvloop
+python-multipart
+
+# Your app needs
+python-dotenv==1.0.1
+streamlit==1.32.2
+
+
