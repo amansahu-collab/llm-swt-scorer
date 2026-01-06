@@ -1,22 +1,21 @@
 from openai import OpenAI
 
 
-class LocalLLMClient:
+class OllamaClient:
     """
-    vLLM OpenAI-compatible client (GPU required)
+    Ollama OpenAI-compatible client (CPU-safe)
     """
 
     def __init__(self):
         self.client = OpenAI(
-            base_url="http://localhost:8000/v1",
-            api_key="EMPTY",  # required by SDK, ignored by vLLM
+            base_url="http://localhost:11434/v1",
+            api_key="ollama",  # dummy, required by SDK
         )
 
     def chat(self, system_prompt: str, user_prompt: str) -> str:
         resp = self.client.chat.completions.create(
-            model="meta-llama/Meta-Llama-3.1-8B-Instruct",
+            model="llama3.1:8b",
             temperature=0,
-            top_p=1,
             messages=[
                 {"role": "system", "content": system_prompt},
                 {"role": "user", "content": user_prompt},
