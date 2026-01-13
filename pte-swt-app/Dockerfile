@@ -24,7 +24,6 @@ RUN pip install --no-cache-dir --upgrade pip \
 # -------- App Code --------
 COPY api /app/api
 COPY app /app/app
-COPY streamlit_app.py /app/streamlit_app.py
 COPY entrypoint.sh /app/entrypoint.sh
 
 RUN chmod +x /app/entrypoint.sh
